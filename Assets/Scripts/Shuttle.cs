@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 // Шатл, который реагирует на притяжение Земли и Луны,
@@ -28,6 +29,7 @@ public class Shuttle : MonoBehaviour
     private bool planted;
     private Vector3 toMoon;
     private Vector3 toEarth;
+    private bool waitingForReset;
 
     private void Awake()
     {
@@ -39,16 +41,17 @@ public class Shuttle : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown("space"))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             Reset();
             Launch();
         }
 
         // Повышаем зашумленность и включаем таймер сброса, если слишком далеко от Земли
-        if ((tr.position - earth.position).sqrMagnitude > 100*100)
+        if (!waitingForReset && (tr.position - earth.position).sqrMagnitude > 100*100)
         {
-            Invoke("Reset", 2);
+            waitingForReset = true;
+            StartCoroutine(ScheduleReset());
             noise.grainIntensityMin = 1;
             noise.grainIntensityMax = 1;
         }
@@ -72,7 +75,6 @@ public class Shuttle : MonoBehaviour
         }
     }
 
-
     /// <summary>
     ///  Возвращает шатл на стартовую площадку, обнуляет скорость и флаги,
     ///  чистит траекторию и уменьшает шум
@@ -91,6 +93,12 @@ public class Shuttle : MonoBehaviour
         noise.grainIntensityMax = 0.2f;
     }
 
+    private IEnumerator ScheduleReset()
+    {
+        yield return new WaitForSeconds(2);
+        Reset();
+    }
+
     /// <summary>
     ///  Запускает шатл
     /// </summary>
@@ -104,7 +112,7 @@ public class Shuttle : MonoBehaviour
     {
         if (!planted)
         {
-            // Выравниваем флагшто по нормали и разворачиваем флаг в случайную сторону
+            // Выравниваем флагшток по нормали и разворачиваем флаг в случайную сторону
             var rotation = Quaternion.FromToRotation(Vector3.up, collision.contacts[0].normal)*
                            Quaternion.Euler(0, Random.value*360, 0);
             var flag = (Transform) Instantiate(flagPrefab, collision.contacts[0].point, rotation);
@@ -124,6 +132,7 @@ public class Shuttle : MonoBehaviour
         shuttleMass = GUI.HorizontalSlider(new Rect(20, 20, Screen.width/2 - 60, 40), shuttleMass, 0.01f, 4.0f);
         GUI.Label(new Rect(20, 35, Screen.width/2 - 60, 20), "Масса: " + shuttleMass.ToString("F2"));
         velocity = GUI.HorizontalSlider(new Rect(Screen.width/2 + 40, 20, Screen.width/2 - 60, 40), velocity, 0, 5000);
-        GUI.Label(new Rect(Screen.width/2 + 40, 35, Screen.width/2 - 60, 20), "Стартовая скорость: " + velocity.ToString("F0"));
+        GUI.Label(new Rect(Screen.width/2 + 40, 35, Screen.width/2 - 60, 20),
+            "Стартовая скорость: " + velocity.ToString("F0"));
     }
 }
