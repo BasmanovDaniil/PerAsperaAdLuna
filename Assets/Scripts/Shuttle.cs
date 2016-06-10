@@ -1,23 +1,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Шатл, который реагирует на притяжение Земли и Луны,
-// отображает интерфейс для запуска и настройки массы и скорости,
-// рисует траекторию полёта и ставит флаги при столкновении
+// РЁР°С‚Р», РєРѕС‚РѕСЂС‹Р№ СЂРµР°РіРёСЂСѓРµС‚ РЅР° РїСЂРёС‚СЏР¶РµРЅРёРµ Р—РµРјР»Рё Рё Р›СѓРЅС‹,
+// РѕС‚РѕР±СЂР°Р¶Р°РµС‚ РёРЅС‚РµСЂС„РµР№СЃ РґР»СЏ Р·Р°РїСѓСЃРєР° Рё РЅР°СЃС‚СЂРѕР№РєРё РјР°СЃСЃС‹ Рё СЃРєРѕСЂРѕСЃС‚Рё,
+// СЂРёСЃСѓРµС‚ С‚СЂР°РµРєС‚РѕСЂРёСЋ РїРѕР»С‘С‚Р° Рё СЃС‚Р°РІРёС‚ С„Р»Р°РіРё РїСЂРё СЃС‚РѕР»РєРЅРѕРІРµРЅРёРё
 public class Shuttle : MonoBehaviour
 {
     public Transform flagPrefab;
-    // Координаты и вращение респавна
+    // РљРѕРѕСЂРґРёРЅР°С‚С‹ Рё РІСЂР°С‰РµРЅРёРµ СЂРµСЃРїР°РІРЅР°
     public Transform canaveral;
-    // Координаты Луны и Земли
+    // РљРѕРѕСЂРґРёРЅР°С‚С‹ Р›СѓРЅС‹ Рё Р—РµРјР»Рё
     public Transform moon;
     public Transform earth;
-    // Стартовая скорость и массы шатла, Луны и Земли
+    // РЎС‚Р°СЂС‚РѕРІР°СЏ СЃРєРѕСЂРѕСЃС‚СЊ Рё РјР°СЃСЃС‹ С€Р°С‚Р»Р°, Р›СѓРЅС‹ Рё Р—РµРјР»Рё
     public float velocity = 1800;
     public float shuttleMass = 1;
     public float moonMass = 1000;
     public float earthMass = 1000;
-    // Ссылка на скрипт с шумом на главной камере
+    // РЎСЃС‹Р»РєР° РЅР° СЃРєСЂРёРїС‚ СЃ С€СѓРјРѕРј РЅР° РіР»Р°РІРЅРѕР№ РєР°РјРµСЂРµ
     public NoiseEffect noise;
 
     private Transform tr;
@@ -32,7 +32,7 @@ public class Shuttle : MonoBehaviour
     void Awake()
     {
         tr = transform;
-        rb = rigidbody;
+        rb = GetComponent<Rigidbody>();
         trajectory = new List<Vector3>();
         lineRenderer = gameObject.GetComponent<LineRenderer>();
     }
@@ -45,7 +45,7 @@ public class Shuttle : MonoBehaviour
             Launch();
         }
 
-        // Повышаем зашумленность и включаем таймер сброса, если слишком далеко от Земли
+        // РџРѕРІС‹С€Р°РµРј Р·Р°С€СѓРјР»РµРЅРЅРѕСЃС‚СЊ Рё РІРєР»СЋС‡Р°РµРј С‚Р°Р№РјРµСЂ СЃР±СЂРѕСЃР°, РµСЃР»Рё СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ Р—РµРјР»Рё
         if ((tr.position - earth.position).sqrMagnitude > 100*100)
         {
             Invoke("Reset", 2);
@@ -62,7 +62,7 @@ public class Shuttle : MonoBehaviour
             toMoon = moon.position - tr.position;
             rb.AddForce(toEarth * rb.mass * earthMass * Time.deltaTime / toEarth.sqrMagnitude);
             rb.AddForce(toMoon * rb.mass * moonMass * Time.deltaTime / toMoon.sqrMagnitude);
-            // Обновляем точки траектории, если уже летим, но ещё не поставили флаг
+            // РћР±РЅРѕРІР»СЏРµРј С‚РѕС‡РєРё С‚СЂР°РµРєС‚РѕСЂРёРё, РµСЃР»Рё СѓР¶Рµ Р»РµС‚РёРј, РЅРѕ РµС‰С‘ РЅРµ РїРѕСЃС‚Р°РІРёР»Рё С„Р»Р°Рі
             if (!planted)
             {
                 trajectory.Add(tr.position);
@@ -74,8 +74,8 @@ public class Shuttle : MonoBehaviour
 
 
     /// <summary>
-    ///  Возвращает шатл на стартовую площадку, обнуляет скорость и флаги,
-    ///  чистит траекторию и уменьшает шум
+    ///  Р’РѕР·РІСЂР°С‰Р°РµС‚ С€Р°С‚Р» РЅР° СЃС‚Р°СЂС‚РѕРІСѓСЋ РїР»РѕС‰Р°РґРєСѓ, РѕР±РЅСѓР»СЏРµС‚ СЃРєРѕСЂРѕСЃС‚СЊ Рё С„Р»Р°РіРё,
+    ///  С‡РёСЃС‚РёС‚ С‚СЂР°РµРєС‚РѕСЂРёСЋ Рё СѓРјРµРЅСЊС€Р°РµС‚ С€СѓРј
     /// </summary>
     void Reset()
     {
@@ -92,7 +92,7 @@ public class Shuttle : MonoBehaviour
     }
 
     /// <summary>
-    ///  Запускает шатл
+    ///  Р—Р°РїСѓСЃРєР°РµС‚ С€Р°С‚Р»
     /// </summary>
     void Launch()
     {
@@ -104,11 +104,11 @@ public class Shuttle : MonoBehaviour
     {
         if (!planted)
         {
-            // Выравниваем флагшто по нормали и разворачиваем флаг в случайную сторону
+            // Р’С‹СЂР°РІРЅРёРІР°РµРј С„Р»Р°РіС€С‚Рѕ РїРѕ РЅРѕСЂРјР°Р»Рё Рё СЂР°Р·РІРѕСЂР°С‡РёРІР°РµРј С„Р»Р°Рі РІ СЃР»СѓС‡Р°Р№РЅСѓСЋ СЃС‚РѕСЂРѕРЅСѓ
             var rotation = Quaternion.FromToRotation(Vector3.up, collision.contacts[0].normal)*
                            Quaternion.Euler(0, Random.value*360, 0);
             var flag = Instantiate(flagPrefab, collision.contacts[0].point, rotation) as Transform;
-            // Прикрепляем флаг, чтобы он двигался вместе с жертвой столкновения
+            // РџСЂРёРєСЂРµРїР»СЏРµРј С„Р»Р°Рі, С‡С‚РѕР±С‹ РѕРЅ РґРІРёРіР°Р»СЃСЏ РІРјРµСЃС‚Рµ СЃ Р¶РµСЂС‚РІРѕР№ СЃС‚РѕР»РєРЅРѕРІРµРЅРёСЏ
             flag.parent = collision.transform;
             planted = true;
         }
@@ -116,15 +116,15 @@ public class Shuttle : MonoBehaviour
 
     void OnGUI()
     {
-        if (GUI.Button(new Rect(Screen.width/2 - 30, 20, 60, 40), "Пуск"))
+        if (GUI.Button(new Rect(Screen.width/2 - 30, 20, 60, 40), "РџСѓСЃРє"))
         {
             Reset();
             Launch();
         }
         shuttleMass = GUI.HorizontalSlider(new Rect(20, 20, Screen.width / 2 - 60, 40), shuttleMass, 0.01f, 4.0f);
-        GUI.Label(new Rect(20, 35, Screen.width / 2 - 60, 20), "Масса: " + shuttleMass.ToString("F2"));
+        GUI.Label(new Rect(20, 35, Screen.width / 2 - 60, 20), "РњР°СЃСЃР°: " + shuttleMass.ToString("F2"));
         velocity = GUI.HorizontalSlider(new Rect(Screen.width / 2 + 40, 20, Screen.width / 2 - 60, 40), velocity, 0, 5000);
-        GUI.Label(new Rect(Screen.width / 2 + 40, 35, Screen.width / 2 - 60, 20), "Стартовая скорость: " + velocity.ToString("F0"));
+        GUI.Label(new Rect(Screen.width / 2 + 40, 35, Screen.width / 2 - 60, 20), "РЎС‚Р°СЂС‚РѕРІР°СЏ СЃРєРѕСЂРѕСЃС‚СЊ: " + velocity.ToString("F0"));
     }
 }
 

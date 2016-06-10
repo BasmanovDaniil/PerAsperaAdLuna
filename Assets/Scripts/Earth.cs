@@ -11,7 +11,7 @@ public class Earth : MonoBehaviour
     void Awake()
     {
         tr = transform;
-        mat = renderer.material;
+        mat = GetComponent<Renderer>().material;
     }
 
 	void Update ()
