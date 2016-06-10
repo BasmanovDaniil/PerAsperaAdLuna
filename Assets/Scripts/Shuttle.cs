@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 // Шатл, который реагирует на притяжение Земли и Луны,
@@ -29,7 +29,7 @@ public class Shuttle : MonoBehaviour
     private Vector3 toMoon;
     private Vector3 toEarth;
 
-    void Awake()
+    private void Awake()
     {
         tr = transform;
         rb = GetComponent<Rigidbody>();
@@ -52,16 +52,16 @@ public class Shuttle : MonoBehaviour
             noise.grainIntensityMin = 1;
             noise.grainIntensityMax = 1;
         }
-	}
+    }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (launched)
         {
             toEarth = earth.position - tr.position;
             toMoon = moon.position - tr.position;
-            rb.AddForce(toEarth * rb.mass * earthMass * Time.deltaTime / toEarth.sqrMagnitude);
-            rb.AddForce(toMoon * rb.mass * moonMass * Time.deltaTime / toMoon.sqrMagnitude);
+            rb.AddForce(toEarth*rb.mass*earthMass*Time.deltaTime/toEarth.sqrMagnitude);
+            rb.AddForce(toMoon*rb.mass*moonMass*Time.deltaTime/toMoon.sqrMagnitude);
             // Обновляем точки траектории, если уже летим, но ещё не поставили флаг
             if (!planted)
             {
@@ -77,7 +77,7 @@ public class Shuttle : MonoBehaviour
     ///  Возвращает шатл на стартовую площадку, обнуляет скорость и флаги,
     ///  чистит траекторию и уменьшает шум
     /// </summary>
-    void Reset()
+    private void Reset()
     {
         tr.position = canaveral.position;
         tr.rotation = canaveral.rotation;
@@ -94,38 +94,36 @@ public class Shuttle : MonoBehaviour
     /// <summary>
     ///  Запускает шатл
     /// </summary>
-    void Launch()
+    private void Launch()
     {
         rb.AddExplosionForce(velocity, earth.position, 8, 0);
         launched = true;
     }
 
-    void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
         if (!planted)
         {
             // Выравниваем флагшто по нормали и разворачиваем флаг в случайную сторону
             var rotation = Quaternion.FromToRotation(Vector3.up, collision.contacts[0].normal)*
                            Quaternion.Euler(0, Random.value*360, 0);
-            var flag = Instantiate(flagPrefab, collision.contacts[0].point, rotation) as Transform;
+            var flag = (Transform) Instantiate(flagPrefab, collision.contacts[0].point, rotation);
             // Прикрепляем флаг, чтобы он двигался вместе с жертвой столкновения
             flag.parent = collision.transform;
             planted = true;
         }
     }
 
-    void OnGUI()
+    private void OnGUI()
     {
         if (GUI.Button(new Rect(Screen.width/2 - 30, 20, 60, 40), "Пуск"))
         {
             Reset();
             Launch();
         }
-        shuttleMass = GUI.HorizontalSlider(new Rect(20, 20, Screen.width / 2 - 60, 40), shuttleMass, 0.01f, 4.0f);
-        GUI.Label(new Rect(20, 35, Screen.width / 2 - 60, 20), "Масса: " + shuttleMass.ToString("F2"));
-        velocity = GUI.HorizontalSlider(new Rect(Screen.width / 2 + 40, 20, Screen.width / 2 - 60, 40), velocity, 0, 5000);
-        GUI.Label(new Rect(Screen.width / 2 + 40, 35, Screen.width / 2 - 60, 20), "Стартовая скорость: " + velocity.ToString("F0"));
+        shuttleMass = GUI.HorizontalSlider(new Rect(20, 20, Screen.width/2 - 60, 40), shuttleMass, 0.01f, 4.0f);
+        GUI.Label(new Rect(20, 35, Screen.width/2 - 60, 20), "Масса: " + shuttleMass.ToString("F2"));
+        velocity = GUI.HorizontalSlider(new Rect(Screen.width/2 + 40, 20, Screen.width/2 - 60, 40), velocity, 0, 5000);
+        GUI.Label(new Rect(Screen.width/2 + 40, 35, Screen.width/2 - 60, 20), "Стартовая скорость: " + velocity.ToString("F0"));
     }
 }
-
-

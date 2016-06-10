@@ -6,13 +6,13 @@ public class Moon : MonoBehaviour
 
     private Transform tr;
 
-    void Awake()
+    private void Awake()
     {
         tr = transform;
     }
 
-	void Update ()
+    private void Update()
     {
-        tr.rotation *= Quaternion.Euler(0, rotationSpeed * Time.deltaTime, 0);
-	}
+        tr.rotation *= Quaternion.Euler(0, rotationSpeed*Time.deltaTime, 0);
+    }
 }

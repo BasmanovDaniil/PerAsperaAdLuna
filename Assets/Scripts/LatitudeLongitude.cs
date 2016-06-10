@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 
 public class LatitudeLongitude : MonoBehaviour
 {
@@ -7,9 +7,9 @@ public class LatitudeLongitude : MonoBehaviour
     public int longitude = 0;
     public int longitudeMinutes = 0;
 
-	void Awake ()
-	{
-        // Перемещаем transform.forward в указанные географические координаты
-	    transform.rotation = Quaternion.Euler(latitude + latitudeMinutes/60, longitude + longitudeMinutes/60, 0);
-	}
+    private void Awake()
+    {
+        // РџРµСЂРµРјРµС‰Р°РµРј transform.forward РІ СѓРєР°Р·Р°РЅРЅС‹Рµ РіРµРѕРіСЂР°С„РёС‡РµСЃРєРёРµ РєРѕРѕСЂРґРёРЅР°С‚С‹
+        transform.rotation = Quaternion.Euler(latitude + latitudeMinutes/60, longitude + longitudeMinutes/60, 0);
+    }
 }
