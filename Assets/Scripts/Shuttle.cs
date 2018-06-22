@@ -9,9 +9,8 @@ using UnityEngine.Rendering.PostProcessing;
 public class Shuttle : MonoBehaviour
 {
     public Transform flagPrefab;
-    public Transform canaveral;
     public Transform moon;
-    public Transform earth;
+    public Earth earth;
 
     private const float defaultShuttleMass = 1;
     private const float defaultShuttleVelocity = 1800;
@@ -45,7 +44,7 @@ public class Shuttle : MonoBehaviour
             Launch();
         }
 
-        float distance = (transform.position - earth.position).magnitude;
+        float distance = (transform.position - earth.transform.position).magnitude;
         if (distance > homeSpaceDistance)
         {
             float percent = Mathf.Clamp01(Mathf.InverseLerp(homeSpaceDistance, darkSpaceDistance, distance));
@@ -64,7 +63,7 @@ public class Shuttle : MonoBehaviour
     {
         if (launched)
         {
-            Vector3 toEarth = earth.position - transform.position;
+            Vector3 toEarth = earth.transform.position - transform.position;
             Vector3 toMoon = moon.position - transform.position;
             rb.AddForce(toEarth*rb.mass*earthMass*Time.deltaTime/toEarth.sqrMagnitude);
             rb.AddForce(toMoon*rb.mass*moonMass*Time.deltaTime/toMoon.sqrMagnitude);
@@ -101,8 +100,8 @@ public class Shuttle : MonoBehaviour
         waitingForReset = false;
         planted = false;
         launched = false;
-        transform.parent = canaveral.parent;
-        transform.localPosition = canaveral.localPosition;
+        transform.parent = earth.canaveral.parent;
+        transform.localPosition = earth.canaveral.localPosition;
         transform.localRotation = Quaternion.identity;
         rb.mass = shuttleMass;
         rb.velocity = Vector3.zero;
@@ -126,7 +125,7 @@ public class Shuttle : MonoBehaviour
     {
         ResetShuttle();
         transform.parent = null;
-        rb.AddExplosionForce(velocity, earth.position, 8, 0);
+        rb.AddExplosionForce(velocity, earth.transform.position, 8, 0);
         launched = true;
     }
 

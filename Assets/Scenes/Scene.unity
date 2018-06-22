@@ -113,10 +113,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!4 &431378483 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 400002, guid: cfdf8cfb1e1362445b1b6013f704b042, type: 2}
-  m_PrefabInternal: {fileID: 2031746668}
 --- !u!1001 &612902894
 Prefab:
   m_ObjectHideFlags: 0
@@ -159,10 +155,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3520db14619d08d43ac14d7cd1d872b2, type: 2}
   m_IsPrefabParent: 0
---- !u!4 &1032596740 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 400010, guid: cfdf8cfb1e1362445b1b6013f704b042, type: 2}
-  m_PrefabInternal: {fileID: 2031746668}
 --- !u!4 &1032891104 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 6b5a0dd6285206a4e90acb2b0e059b40, type: 2}
@@ -296,21 +288,13 @@ Prefab:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: 6b5a0dd6285206a4e90acb2b0e059b40, type: 2}
-      propertyPath: canaveral
-      value: 
-      objectReference: {fileID: 431378483}
-    - target: {fileID: 11400000, guid: 6b5a0dd6285206a4e90acb2b0e059b40, type: 2}
       propertyPath: moon
       value: 
       objectReference: {fileID: 1941920766}
     - target: {fileID: 11400000, guid: 6b5a0dd6285206a4e90acb2b0e059b40, type: 2}
       propertyPath: earth
       value: 
-      objectReference: {fileID: 1032596740}
-    - target: {fileID: 11400000, guid: 6b5a0dd6285206a4e90acb2b0e059b40, type: 2}
-      propertyPath: noise
-      value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2031746669}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6b5a0dd6285206a4e90acb2b0e059b40, type: 2}
   m_IsPrefabParent: 0
@@ -365,6 +349,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cfdf8cfb1e1362445b1b6013f704b042, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &2031746669 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114582602639680046, guid: cfdf8cfb1e1362445b1b6013f704b042,
+    type: 2}
+  m_PrefabInternal: {fileID: 2031746668}
+  m_Script: {fileID: 11500000, guid: db636f5614eac1346af04dd4e21cb33c, type: 3}
 --- !u!1001 &2068417707
 Prefab:
   m_ObjectHideFlags: 0

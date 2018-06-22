@@ -2,21 +2,23 @@ using UnityEngine;
 
 public class Earth : MonoBehaviour
 {
-    public float cloudSpeed = -0.5f;
-    public float rotationSpeed = 0.5f;
+    public float rotationSpeed = -1;
+    public Transform canaveral;
+    public Renderer earthRenderer;
+    public float cloudSpeed = 0.5f;
 
-    private Transform tr;
-    private Material material;
+    private MaterialPropertyBlock propertyBlock;
 
     private void Awake()
     {
-        tr = transform;
-        material = GetComponent<Renderer>().material;
+        propertyBlock = new MaterialPropertyBlock();
     }
 
     private void Update()
     {
-        tr.rotation *= Quaternion.Euler(0, 0, rotationSpeed*Time.deltaTime);
-        material.SetTextureOffset("_Clouds", new Vector2(Time.time*cloudSpeed/100, 0));
+        transform.rotation *= Quaternion.Euler(0, rotationSpeed*Time.deltaTime, 0);
+
+        propertyBlock.SetVector("_Clouds_ST", new Vector4(1, 1, Time.time*cloudSpeed/100, 0));
+        earthRenderer.SetPropertyBlock(propertyBlock);
     }
 }

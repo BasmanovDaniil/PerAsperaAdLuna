@@ -104,7 +104,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flagPrefab: {fileID: 400002, guid: 29dc55eb3523174408a4cc8976e1fa35, type: 2}
-  canaveral: {fileID: 0}
   moon: {fileID: 0}
   earth: {fileID: 0}
 --- !u!120 &12000000
