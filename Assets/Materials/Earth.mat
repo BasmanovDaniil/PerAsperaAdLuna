@@ -10,80 +10,44 @@ Material:
   m_Shader: {fileID: 4800000, guid: 7c7690060028b4e468ae5a11081190bf, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
+  disabledShaderPasses: []
   m_SavedProperties:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TexEnvs:
-      data:
-        first:
-          name: _MainTex
-        second:
-          m_Texture: {fileID: 2800000, guid: 5fbf868fb7772db4285439b57e017642, type: 3}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _BumpMap
-        second:
-          m_Texture: {fileID: 2800000, guid: 70e86ac1011533c4d8bc348a4dc7dd05, type: 3}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _SpecularTex
-        second:
-          m_Texture: {fileID: 2800000, guid: bfcb767bea8297c48a2f4b3ba34ca488, type: 3}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _Clouds
-        second:
-          m_Texture: {fileID: 2800000, guid: e83ca041322325d45ac8bbfa519b8b80, type: 3}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _Night
-        second:
-          m_Texture: {fileID: 2800000, guid: 156da13c9c678e244b937b13849ecdd0, type: 3}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _Detail
-        second:
-          m_Texture: {fileID: 2800000, guid: e83ca041322325d45ac8bbfa519b8b80, type: 3}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: 70e86ac1011533c4d8bc348a4dc7dd05, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Clouds:
+        m_Texture: {fileID: 2800000, guid: e83ca041322325d45ac8bbfa519b8b80, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Detail:
+        m_Texture: {fileID: 2800000, guid: e83ca041322325d45ac8bbfa519b8b80, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 5fbf868fb7772db4285439b57e017642, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Night:
+        m_Texture: {fileID: 2800000, guid: 156da13c9c678e244b937b13849ecdd0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecularTex:
+        m_Texture: {fileID: 2800000, guid: bfcb767bea8297c48a2f4b3ba34ca488, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
-      data:
-        first:
-          name: _Cutoff
-        second: 1
-      data:
-        first:
-          name: _Emission
-        second: 0
-      data:
-        first:
-          name: _Gloss
-        second: 1
-      data:
-        first:
-          name: _CloudsGloss
-        second: 0.104477614
-      data:
-        first:
-          name: _RimPower
-        second: 2.216418
+    - _CloudsGloss: 0.104477614
+    - _Cutoff: 1
+    - _Emission: 0
+    - _Gloss: 1
+    - _RimPower: 2.216418
     m_Colors:
-      data:
-        first:
-          name: _Color
-        second: {r: 1, g: 1, b: 1, a: 1}
-      data:
-        first:
-          name: _RimColor
-        second: {r: 0, g: 0.28126046, b: 0.6156863, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _RimColor: {r: 0, g: 0.28126046, b: 0.6156863, a: 0}
