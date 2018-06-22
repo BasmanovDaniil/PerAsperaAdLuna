@@ -117,12 +117,6 @@ NavMeshSettings:
 Transform:
   m_PrefabParentObject: {fileID: 400002, guid: cfdf8cfb1e1362445b1b6013f704b042, type: 2}
   m_PrefabInternal: {fileID: 2031746668}
---- !u!114 &432246699 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114033555165913954, guid: 8b90d656c52cbdb468952b7c87984724,
-    type: 2}
-  m_PrefabInternal: {fileID: 2068417707}
-  m_Script: {fileID: 11500000, guid: a88a26a276b4e47619ce2c5adad33fab, type: 3}
 --- !u!1001 &612902894
 Prefab:
   m_ObjectHideFlags: 0
@@ -316,7 +310,7 @@ Prefab:
     - target: {fileID: 11400000, guid: 6b5a0dd6285206a4e90acb2b0e059b40, type: 2}
       propertyPath: noise
       value: 
-      objectReference: {fileID: 432246699}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6b5a0dd6285206a4e90acb2b0e059b40, type: 2}
   m_IsPrefabParent: 0

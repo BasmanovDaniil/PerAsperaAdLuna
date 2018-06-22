@@ -9,21 +9,23 @@ using UnityEngine.Rendering.PostProcessing;
 public class Shuttle : MonoBehaviour
 {
     public Transform flagPrefab;
-    // Координаты и вращение респавна
     public Transform canaveral;
-    // Координаты Луны и Земли
     public Transform moon;
     public Transform earth;
-    // Стартовая скорость и массы шатла, Луны и Земли
-    public float velocity = 1800;
-    public float shuttleMass = 1;
-    public float moonMass = 1000;
-    public float earthMass = 1000;
-    public PostProcessProfile postProcessProfile;
+
+    private const float defaultShuttleMass = 1;
+    private const float defaultShuttleVelocity = 1800;
+    private const float moonMass = 1000;
+    private const float earthMass = 1000;
+    private const float homeSpaceDistance = 100;
+    private const float darkSpaceDistance = 120;
 
     private Rigidbody rb;
     private LineRenderer lineRenderer;
+    private PostProcessVolume postProcessVolume;
     private List<Vector3> trajectory = new List<Vector3>();
+    private float shuttleMass = defaultShuttleMass;
+    private float velocity = defaultShuttleVelocity;
     private bool launched;
     private bool planted;
     private bool waitingForReset;
@@ -32,6 +34,7 @@ public class Shuttle : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         lineRenderer = GetComponent<LineRenderer>();
+        postProcessVolume = GetComponent<PostProcessVolume>();
         ResetShuttle();
     }
 
@@ -42,12 +45,18 @@ public class Shuttle : MonoBehaviour
             Launch();
         }
 
-        // Повышаем зашумленность и включаем таймер сброса, если слишком далеко от Земли
-        if (!waitingForReset && (transform.position - earth.position).sqrMagnitude > 100*100)
+        float distance = (transform.position - earth.position).magnitude;
+        if (distance > homeSpaceDistance)
         {
-            waitingForReset = true;
-            StartCoroutine(ScheduleReset());
-            SetNoise(true);
+            float percent = Mathf.Clamp01(Mathf.InverseLerp(homeSpaceDistance, darkSpaceDistance, distance));
+            SetNoise(percent);
+
+            if (!waitingForReset)
+            {
+                waitingForReset = true;
+                StartCoroutine(ScheduleReset());
+                SetNoise(1);
+            }
         }
     }
 
@@ -83,11 +92,6 @@ public class Shuttle : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
-    {
-        SetNoise(false);
-    }
-
     /// <summary>
     ///  Возвращает шатл на стартовую площадку, обнуляет скорость и флаги,
     ///  чистит траекторию и уменьшает шум
@@ -106,7 +110,7 @@ public class Shuttle : MonoBehaviour
         rb.Sleep();
         trajectory.Clear();
         lineRenderer.positionCount = 0;
-        SetNoise(false);
+        SetNoise(0);
     }
 
     private IEnumerator ScheduleReset()
@@ -126,18 +130,9 @@ public class Shuttle : MonoBehaviour
         launched = true;
     }
 
-    private void SetNoise(bool value)
+    private void SetNoise(float value)
     {
-        var chromaticAberration = postProcessProfile.GetSetting<ChromaticAberration>();
-        if (chromaticAberration != null)
-        {
-            chromaticAberration.enabled.value = value;
-        }
-        var vignette = postProcessProfile.GetSetting<Vignette>();
-        if (vignette != null)
-        {
-            vignette.enabled.value = value;
-        }
+        postProcessVolume.weight = value;
     }
 
     private void OnGUI()
