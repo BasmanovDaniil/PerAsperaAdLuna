@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 // Шатл, который реагирует на притяжение Земли и Луны,
 // отображает интерфейс для запуска и настройки массы и скорости,
@@ -18,8 +19,7 @@ public class Shuttle : MonoBehaviour
     public float shuttleMass = 1;
     public float moonMass = 1000;
     public float earthMass = 1000;
-    // Ссылка на скрипт с шумом на главной камере
-    public NoiseEffect noise;
+    public PostProcessProfile postProcessProfile;
 
     private Rigidbody rb;
     private LineRenderer lineRenderer;
@@ -47,8 +47,7 @@ public class Shuttle : MonoBehaviour
         {
             waitingForReset = true;
             StartCoroutine(ScheduleReset());
-            noise.grainIntensityMin = 1;
-            noise.grainIntensityMax = 1;
+            SetGrain(true);
         }
     }
 
@@ -70,6 +69,20 @@ public class Shuttle : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!planted)
+        {
+            // Выравниваем флагшток по нормали и разворачиваем флаг в случайную сторону
+            var rotation = Quaternion.FromToRotation(Vector3.up, collision.contacts[0].normal)*
+                           Quaternion.Euler(0, Random.value*360, 0);
+            Transform flag = Instantiate(flagPrefab, collision.contacts[0].point, rotation);
+            // Прикрепляем флаг, чтобы он двигался вместе с жертвой столкновения
+            flag.parent = collision.transform;
+            planted = true;
+        }
+    }
+
     /// <summary>
     ///  Возвращает шатл на стартовую площадку, обнуляет скорость и флаги,
     ///  чистит траекторию и уменьшает шум
@@ -88,8 +101,7 @@ public class Shuttle : MonoBehaviour
         rb.Sleep();
         trajectory.Clear();
         lineRenderer.positionCount = 0;
-        noise.grainIntensityMin = 0;
-        noise.grainIntensityMax = 0;
+        SetGrain(false);
     }
 
     private IEnumerator ScheduleReset()
@@ -109,17 +121,12 @@ public class Shuttle : MonoBehaviour
         launched = true;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void SetGrain(bool value)
     {
-        if (!planted)
+        var grain = postProcessProfile.GetSetting<Grain>();
+        if (grain != null)
         {
-            // Выравниваем флагшток по нормали и разворачиваем флаг в случайную сторону
-            var rotation = Quaternion.FromToRotation(Vector3.up, collision.contacts[0].normal)*
-                           Quaternion.Euler(0, Random.value*360, 0);
-            Transform flag = Instantiate(flagPrefab, collision.contacts[0].point, rotation);
-            // Прикрепляем флаг, чтобы он двигался вместе с жертвой столкновения
-            flag.parent = collision.transform;
-            planted = true;
+            grain.enabled.value = value;
         }
     }
 

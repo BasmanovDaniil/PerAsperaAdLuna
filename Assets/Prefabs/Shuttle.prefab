@@ -110,7 +110,7 @@ MonoBehaviour:
   shuttleMass: 1
   moonMass: 1000
   earthMass: 1000
-  noise: {fileID: 0}
+  postProcessProfile: {fileID: 11400000, guid: e2177c1f39014804280c60ddc48ae889, type: 2}
 --- !u!120 &12000000
 LineRenderer:
   m_ObjectHideFlags: 1
