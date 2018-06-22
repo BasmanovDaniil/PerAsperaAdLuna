@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -69,7 +69,7 @@ public class Shuttle : MonoBehaviour
             if (!planted)
             {
                 trajectory.Add(tr.position);
-                lineRenderer.SetVertexCount(trajectory.Count);
+                lineRenderer.positionCount = trajectory.Count;
                 lineRenderer.SetPosition(trajectory.Count - 1, trajectory[trajectory.Count - 1]);
             }
         }
@@ -88,7 +88,7 @@ public class Shuttle : MonoBehaviour
         planted = false;
         launched = false;
         trajectory.Clear();
-        lineRenderer.SetVertexCount(0);
+        lineRenderer.positionCount = 0;
         noise.grainIntensityMin = 0.2f;
         noise.grainIntensityMax = 0.2f;
     }
@@ -115,7 +115,7 @@ public class Shuttle : MonoBehaviour
             // Выравниваем флагшток по нормали и разворачиваем флаг в случайную сторону
             var rotation = Quaternion.FromToRotation(Vector3.up, collision.contacts[0].normal)*
                            Quaternion.Euler(0, Random.value*360, 0);
-            var flag = (Transform) Instantiate(flagPrefab, collision.contacts[0].point, rotation);
+            Transform flag = Instantiate(flagPrefab, collision.contacts[0].point, rotation);
             // Прикрепляем флаг, чтобы он двигался вместе с жертвой столкновения
             flag.parent = collision.transform;
             planted = true;
