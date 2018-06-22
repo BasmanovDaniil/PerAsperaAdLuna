@@ -40,6 +40,7 @@ Shader "Custom/Planet"
             half Smoothness;
             half Occlusion;
             fixed Alpha;
+            half Clouds;
             half3 Night;
         };
 
@@ -67,7 +68,7 @@ Shader "Custom/Planet"
             half4 color = LightingStandard(ls, viewDir, gi);
 
             fixed night = 1.0 - saturate(saturate(dot(s.Normal, gi.light.dir))*16.0);
-            color.rgb += _NightColor*s.Night*night;
+            color.rgb += _NightColor*s.Night*night*(1 - s.Clouds);
             return color;
         }
 
@@ -95,6 +96,7 @@ Shader "Custom/Planet"
             o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_MainTex));
             o.Metallic = lerp(_GroundMetallic, _WaterMetallic, waterMask.a);
             o.Smoothness = lerp(_GroundSmoothness, _WaterSmoothness, waterMask.a);
+            o.Clouds = clouds.a;
             o.Night = tex2D(_Night, IN.uv_Night.xy).rgb;
         }
         ENDCG
