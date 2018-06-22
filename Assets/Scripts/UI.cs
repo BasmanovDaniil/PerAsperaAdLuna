@@ -3,12 +3,14 @@ using UnityEngine.UI;
 
 namespace PerAsperaAdLuna
 {
-    public class LaunchingUI : MonoBehaviour
+    public class UI : MonoBehaviour
     {
         [SerializeField]
         private Shuttle shuttle;
         [SerializeField]
-        private Button launchButton;
+        private Button launchResetButton;
+        [SerializeField]
+        private Text launchResetText;
         [SerializeField]
         private Slider massSlider;
         [SerializeField]
@@ -20,9 +22,21 @@ namespace PerAsperaAdLuna
 
         private void Awake()
         {
-            launchButton.onClick.AddListener(() => shuttle.Launch());
+            launchResetButton.onClick.AddListener(() =>
+            {
+                if (shuttle.launched)
+                {
+                    ResetShuttle();
+                }
+                else
+                {
+                    Launch();
+                }
+            });
             massSlider.onValueChanged.AddListener(SetMass);
             velocitySlider.onValueChanged.AddListener(SetVelocity);
+
+            shuttle.onReset += SetLaunchText;
         }
 
         private void Start()
@@ -37,8 +51,37 @@ namespace PerAsperaAdLuna
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                shuttle.Launch();
+                if (shuttle.launched)
+                {
+                    ResetShuttle();
+                }
+                else
+                {
+                    Launch();
+                }
             }
+        }
+
+        private void ResetShuttle()
+        {
+            shuttle.ResetShuttle();
+            SetLaunchText();
+        }
+
+        private void Launch()
+        {
+            shuttle.Launch();
+            SetResetText();
+        }
+
+        private void SetLaunchText()
+        {
+            launchResetText.text = "Launch";
+        }
+
+        private void SetResetText()
+        {
+            launchResetText.text = "Reset";
         }
 
         private void SetMass(float value)

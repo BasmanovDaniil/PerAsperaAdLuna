@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 114390428889070306}
   - component: {fileID: 114681084093043208}
   m_Layer: 5
-  m_Name: LaunchButton
+  m_Name: LaunchResetButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 222688358127059768}
   - component: {fileID: 114824951863128226}
   m_Layer: 5
-  m_Name: Text
+  m_Name: LaunchResetText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -606,7 +606,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shuttle: {fileID: 0}
-  launchButton: {fileID: 114681084093043208}
+  launchResetButton: {fileID: 114681084093043208}
+  launchResetText: {fileID: 114824951863128226}
   massSlider: {fileID: 114022948902254888}
   massText: {fileID: 114832648654633024}
   velocitySlider: {fileID: 114455389241451778}

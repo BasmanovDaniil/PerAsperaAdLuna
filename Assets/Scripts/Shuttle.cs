@@ -1,20 +1,27 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
+using Random = UnityEngine.Random;
 
 namespace PerAsperaAdLuna
 {
     public class Shuttle : MonoBehaviour
     {
-        public Transform flagPrefab;
-        public Transform moon;
-        public Earth earth;
+        public event Action onReset = () => { };
+
+        [SerializeField]
+        private Transform flagPrefab;
+        [SerializeField]
+        private Transform moon;
+        [SerializeField]
+        private Earth earth;
 
         public float mass { get; private set; }
         public float normalizedMass { get { return Mathf.InverseLerp(minShuttleMass, maxShuttleMass, mass); } }
         public float velocity { get; private set; }
         public float normalizedVelocity { get { return Mathf.InverseLerp(minShuttleVelocity, maxShuttleVelocity, velocity); } }
+        public bool launched { get; private set; }
 
         private const float defaultShuttleMass = 1;
         private const float minShuttleMass = 0.01f;
@@ -26,14 +33,14 @@ namespace PerAsperaAdLuna
         private const float earthMass = 1000;
         private const float homeSpaceDistance = 100;
         private const float darkSpaceDistance = 120;
+        private const float resetInterval = 2;
 
         private Rigidbody rb;
         private LineRenderer lineRenderer;
         private PostProcessVolume postProcessVolume;
         private List<Vector3> trajectory = new List<Vector3>();
-        private bool launched;
         private bool planted;
-        private bool waitingForReset;
+        private float? resetTime;
 
         private void Awake()
         {
@@ -54,12 +61,16 @@ namespace PerAsperaAdLuna
                 float percent = Mathf.Clamp01(Mathf.InverseLerp(homeSpaceDistance, darkSpaceDistance, distance));
                 SetNoise(percent);
 
-                if (!waitingForReset)
+                if (!resetTime.HasValue)
                 {
-                    waitingForReset = true;
-                    StartCoroutine(ScheduleReset());
+                    resetTime = Time.time + resetInterval;
                     SetNoise(1);
                 }
+            }
+
+            if (resetTime.HasValue && Time.time > resetTime)
+            {
+                ResetShuttle();
             }
         }
 
@@ -93,12 +104,35 @@ namespace PerAsperaAdLuna
             }
         }
 
+        public void ResetShuttle()
+        {
+            launched = false;
+            planted = false;
+            resetTime = null;
+
+            transform.parent = earth.canaveral;
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+            rb.mass = mass;
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.Sleep();
+
+            trajectory.Clear();
+            lineRenderer.positionCount = 0;
+            SetNoise(0);
+
+            onReset();
+        }
+
         public void Launch()
         {
-            ResetShuttle();
+            launched = true;
+            planted = false;
+            resetTime = null;
+
             transform.parent = null;
             rb.AddExplosionForce(velocity, earth.transform.position, 8, 0);
-            launched = true;
         }
 
         public void SetMass(float value)
@@ -109,29 +143,6 @@ namespace PerAsperaAdLuna
         public void SetVelocity(float value)
         {
             velocity = Mathf.Lerp(minShuttleVelocity, maxShuttleVelocity, value);
-        }
-
-        private void ResetShuttle()
-        {
-            waitingForReset = false;
-            planted = false;
-            launched = false;
-            transform.parent = earth.canaveral.parent;
-            transform.localPosition = earth.canaveral.localPosition;
-            transform.localRotation = Quaternion.identity;
-            rb.mass = mass;
-            rb.velocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-            rb.Sleep();
-            trajectory.Clear();
-            lineRenderer.positionCount = 0;
-            SetNoise(0);
-        }
-
-        private IEnumerator ScheduleReset()
-        {
-            yield return new WaitForSeconds(2);
-            ResetShuttle();
         }
 
         private void SetNoise(float value)
