@@ -21,34 +21,29 @@ public class Shuttle : MonoBehaviour
     // Ссылка на скрипт с шумом на главной камере
     public NoiseEffect noise;
 
-    private Transform tr;
     private Rigidbody rb;
     private LineRenderer lineRenderer;
-    private List<Vector3> trajectory;
+    private List<Vector3> trajectory = new List<Vector3>();
     private bool launched;
     private bool planted;
-    private Vector3 toMoon;
-    private Vector3 toEarth;
     private bool waitingForReset;
 
     private void Awake()
     {
-        tr = transform;
         rb = GetComponent<Rigidbody>();
-        trajectory = new List<Vector3>();
-        lineRenderer = gameObject.GetComponent<LineRenderer>();
+        lineRenderer = GetComponent<LineRenderer>();
+        ResetShuttle();
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Reset();
             Launch();
         }
 
         // Повышаем зашумленность и включаем таймер сброса, если слишком далеко от Земли
-        if (!waitingForReset && (tr.position - earth.position).sqrMagnitude > 100*100)
+        if (!waitingForReset && (transform.position - earth.position).sqrMagnitude > 100*100)
         {
             waitingForReset = true;
             StartCoroutine(ScheduleReset());
@@ -61,14 +56,14 @@ public class Shuttle : MonoBehaviour
     {
         if (launched)
         {
-            toEarth = earth.position - tr.position;
-            toMoon = moon.position - tr.position;
+            Vector3 toEarth = earth.position - transform.position;
+            Vector3 toMoon = moon.position - transform.position;
             rb.AddForce(toEarth*rb.mass*earthMass*Time.deltaTime/toEarth.sqrMagnitude);
             rb.AddForce(toMoon*rb.mass*moonMass*Time.deltaTime/toMoon.sqrMagnitude);
             // Обновляем точки траектории, если уже летим, но ещё не поставили флаг
             if (!planted)
             {
-                trajectory.Add(tr.position);
+                trajectory.Add(transform.position);
                 lineRenderer.positionCount = trajectory.Count;
                 lineRenderer.SetPosition(trajectory.Count - 1, trajectory[trajectory.Count - 1]);
             }
@@ -79,24 +74,28 @@ public class Shuttle : MonoBehaviour
     ///  Возвращает шатл на стартовую площадку, обнуляет скорость и флаги,
     ///  чистит траекторию и уменьшает шум
     /// </summary>
-    private void Reset()
+    private void ResetShuttle()
     {
-        tr.position = canaveral.position;
-        tr.rotation = canaveral.rotation;
-        rb.mass = shuttleMass;
-        rb.velocity = Vector3.zero;
+        waitingForReset = false;
         planted = false;
         launched = false;
+        transform.parent = canaveral.parent;
+        transform.localPosition = canaveral.localPosition;
+        transform.localRotation = Quaternion.identity;
+        rb.mass = shuttleMass;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.Sleep();
         trajectory.Clear();
         lineRenderer.positionCount = 0;
-        noise.grainIntensityMin = 0.2f;
-        noise.grainIntensityMax = 0.2f;
+        noise.grainIntensityMin = 0;
+        noise.grainIntensityMax = 0;
     }
 
     private IEnumerator ScheduleReset()
     {
         yield return new WaitForSeconds(2);
-        Reset();
+        ResetShuttle();
     }
 
     /// <summary>
@@ -104,6 +103,8 @@ public class Shuttle : MonoBehaviour
     /// </summary>
     private void Launch()
     {
+        ResetShuttle();
+        transform.parent = null;
         rb.AddExplosionForce(velocity, earth.position, 8, 0);
         launched = true;
     }
@@ -126,7 +127,6 @@ public class Shuttle : MonoBehaviour
     {
         if (GUI.Button(new Rect(Screen.width/2 - 30, 20, 60, 40), "Пуск"))
         {
-            Reset();
             Launch();
         }
         shuttleMass = GUI.HorizontalSlider(new Rect(20, 20, Screen.width/2 - 60, 40), shuttleMass, 0.01f, 4.0f);
