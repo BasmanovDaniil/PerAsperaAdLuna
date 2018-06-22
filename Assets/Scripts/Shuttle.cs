@@ -47,7 +47,7 @@ public class Shuttle : MonoBehaviour
         {
             waitingForReset = true;
             StartCoroutine(ScheduleReset());
-            SetGrain(true);
+            SetNoise(true);
         }
     }
 
@@ -83,6 +83,11 @@ public class Shuttle : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        SetNoise(false);
+    }
+
     /// <summary>
     ///  Возвращает шатл на стартовую площадку, обнуляет скорость и флаги,
     ///  чистит траекторию и уменьшает шум
@@ -101,7 +106,7 @@ public class Shuttle : MonoBehaviour
         rb.Sleep();
         trajectory.Clear();
         lineRenderer.positionCount = 0;
-        SetGrain(false);
+        SetNoise(false);
     }
 
     private IEnumerator ScheduleReset()
@@ -121,12 +126,17 @@ public class Shuttle : MonoBehaviour
         launched = true;
     }
 
-    private void SetGrain(bool value)
+    private void SetNoise(bool value)
     {
-        var grain = postProcessProfile.GetSetting<Grain>();
-        if (grain != null)
+        var chromaticAberration = postProcessProfile.GetSetting<ChromaticAberration>();
+        if (chromaticAberration != null)
         {
-            grain.enabled.value = value;
+            chromaticAberration.enabled.value = value;
+        }
+        var vignette = postProcessProfile.GetSetting<Vignette>();
+        if (vignette != null)
+        {
+            vignette.enabled.value = value;
         }
     }
 
