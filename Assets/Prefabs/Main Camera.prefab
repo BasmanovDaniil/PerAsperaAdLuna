@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4097962698563410}
   - component: {fileID: 20925674595165250}
   - component: {fileID: 81148681853641082}
-  - component: {fileID: 114380953178213572}
+  - component: {fileID: 114322606143145066}
   - component: {fileID: 114533582913672398}
   - component: {fileID: 114079100271067436}
   m_Layer: 0
@@ -103,7 +103,7 @@ MonoBehaviour:
   blendDistance: 0
   weight: 1
   priority: 0
---- !u!114 &114380953178213572
+--- !u!114 &114322606143145066
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -111,14 +111,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1081303666851664}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27acebc9ad1110f6d00074c88d76c639, type: 3}
+  m_Script: {fileID: 11500000, guid: f1f19331b0f94a34abea3873ce98fb9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   distance: 15
   xSpeed: 250
-  ySpeed: 120
-  yMinLimit: -20
+  ySpeed: 250
+  yMinLimit: -80
   yMaxLimit: 80
 --- !u!114 &114533582913672398
 MonoBehaviour:
