@@ -1,18 +1,14 @@
 using UnityEngine;
 
-public class Moon : MonoBehaviour
+namespace PerAsperaAdLuna
 {
-    public float rotationSpeed = 1f;
-
-    private Transform tr;
-
-    private void Awake()
+    public class Moon : MonoBehaviour
     {
-        tr = transform;
-    }
+        public float rotationSpeed = -1.5f;
 
-    private void Update()
-    {
-        tr.rotation *= Quaternion.Euler(0, rotationSpeed*Time.deltaTime, 0);
+        private void Update()
+        {
+            transform.rotation *= Quaternion.Euler(0, rotationSpeed*Time.deltaTime, 0);
+        }
     }
 }

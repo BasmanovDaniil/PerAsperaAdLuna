@@ -1,63 +1,66 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LaunchingUI : MonoBehaviour
+namespace PerAsperaAdLuna
 {
-    [SerializeField]
-    private Shuttle shuttle;
-    [SerializeField]
-    private Button launchButton;
-    [SerializeField]
-    private Slider massSlider;
-    [SerializeField]
-    private Text massText;
-    [SerializeField]
-    private Slider velocitySlider;
-    [SerializeField]
-    private Text velocityText;
-
-    private void Awake()
+    public class LaunchingUI : MonoBehaviour
     {
-        launchButton.onClick.AddListener(() => shuttle.Launch());
-        massSlider.onValueChanged.AddListener(SetMass);
-        velocitySlider.onValueChanged.AddListener(SetVelocity);
-    }
+        [SerializeField]
+        private Shuttle shuttle;
+        [SerializeField]
+        private Button launchButton;
+        [SerializeField]
+        private Slider massSlider;
+        [SerializeField]
+        private Text massText;
+        [SerializeField]
+        private Slider velocitySlider;
+        [SerializeField]
+        private Text velocityText;
 
-    private void Start()
-    {
-        massSlider.value = shuttle.normalizedMass;
-        UpdateMassText();
-        velocitySlider.value = shuttle.normalizedVelocity;
-        UpdateVelocityText();
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
+        private void Awake()
         {
-            shuttle.Launch();
+            launchButton.onClick.AddListener(() => shuttle.Launch());
+            massSlider.onValueChanged.AddListener(SetMass);
+            velocitySlider.onValueChanged.AddListener(SetVelocity);
         }
-    }
 
-    private void SetMass(float value)
-    {
-        shuttle.SetMass(value);
-        UpdateMassText();
-    }
+        private void Start()
+        {
+            massSlider.value = shuttle.normalizedMass;
+            UpdateMassText();
+            velocitySlider.value = shuttle.normalizedVelocity;
+            UpdateVelocityText();
+        }
 
-    private void UpdateMassText()
-    {
-        massText.text = string.Format("Mass: {0:F2}", shuttle.mass);
-    }
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                shuttle.Launch();
+            }
+        }
 
-    private void SetVelocity(float value)
-    {
-        shuttle.SetVelocity(value);
-        UpdateVelocityText();
-    }
+        private void SetMass(float value)
+        {
+            shuttle.SetMass(value);
+            UpdateMassText();
+        }
 
-    private void UpdateVelocityText()
-    {
-        velocityText.text = string.Format("Velocity: {0:F0}", shuttle.velocity);
+        private void UpdateMassText()
+        {
+            massText.text = string.Format("Mass: {0:F2}", shuttle.mass);
+        }
+
+        private void SetVelocity(float value)
+        {
+            shuttle.SetVelocity(value);
+            UpdateVelocityText();
+        }
+
+        private void UpdateVelocityText()
+        {
+            velocityText.text = string.Format("Velocity: {0:F0}", shuttle.velocity);
+        }
     }
 }
